@@ -12,11 +12,11 @@
 ![Docker](https://img.shields.io/badge/Container-Docker-blue.svg)
 
 
-## How to Install and Run the Project
-Before beggining, make sure to follow the steps below!
-#### 1. Prerequisites
+## How to Run the Project
+All the data analysis was performed using jupyter notebooks. These are self-contained and do not need any particular setup to be executed.
+Some scripts are currently deployed and scheduled to run every hour on a raspberry pi to perform extraction, some manipulation, and insertion in the Postgresq.
+These scripts are available in the "scheduled scripts" folder. Please, **do not run these scripts outside the raspberry-pi, they perform inserts on the DB**. A dump of the DB is available in the repository.
 
-#### 2. Instalation steps
 
 ## Project Description
 
