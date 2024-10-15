@@ -10,9 +10,13 @@
 ![Uses JSON](https://img.shields.io/badge/Uses-JSON-blue.svg)
 ![APIs](https://img.shields.io/badge/API-Integrated-brightgreen.svg)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue.svg)
+![Docker](https://img.shields.io/badge/Container-Docker-blue.svg)
+
 
 ## How to Install and Run the Project
-
+Before beggining, make sure to follow the steps below!
+### Prerequisites
+### Instalation steps
 
 ## Project Description
 
