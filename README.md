@@ -1,6 +1,5 @@
 # Group 07 README file
 
-
 ## Badges
 
 ![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)
@@ -15,8 +14,9 @@
 
 ## How to Install and Run the Project
 Before beggining, make sure to follow the steps below!
-### Prerequisites
-### Instalation steps
+#### 1. Prerequisites
+
+#### 2. Instalation steps
 
 ## Project Description
 
@@ -26,7 +26,7 @@ The focus of the project is to analyze air pollution data in Milan to provide in
 - Visualizations of Weather data.
 
 
-## 1. Exploratory Analysis for Air Quality 
+#### 1. Exploratory Analysis for Air Quality 
 
 In this file the project implements an in-depth exploratory analysis of the pollution data gathered from the city of Milan. Its goal is to explore trends and relationships that could be found in the dataset, providing valuable notes into air quality over time.
 
@@ -34,13 +34,13 @@ In this file the project implements an in-depth exploratory analysis of the poll
 
 <img src="https://drive.google.com/uc?id=1CSzpXi49F-KWKQt86UcchywiWygFcocb" alt="Exploratory Analysis Screenshot" width="50%"/>
 
-## 2. Traffic API
+#### 2. Traffic API
 
 This file purpose is to fetch real-time traffic data using a traffic API to be uploaded in the dashboard. The data found are displayed on an **interactive map**, enabling users to **explore** the map and view the various traffic patterns in Milan. This feature is mandatory to understand the relationship between traffic and pollution levels.
 
 <img src="https://drive.google.com/uc?id=1-qF8CL0CnO1b5AHf4TVUyT4teeiZT_mR" alt="Traffic Map Screenshot" width="30%"/>
 
-## 3. Exploratory Analysis for Historical Weather Data
+#### 3. Exploratory Analysis for Historical Weather Data
 
 This part of code is responsible for Visualizating historical weather data of Milan, illustrating how weather patterns like humidity, wind speed, temperature, percipitation, cloud coverage correlate with air quality. It examines historical weather trends so that the dashboard can offer insights into seasonal pollution patterns as far as future forecasts. 
 
