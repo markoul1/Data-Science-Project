@@ -1,0 +1,70 @@
+/* Reset for margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Full-width navbar styling */
+nav {
+    width: 100%;
+    background-color: #181B1F; /* Navbar background color */
+    color: #CCCCD6; /* Default text color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Navbar list styling */
+nav ul {
+    list-style: none;
+    display: flex;
+    height: 5vh;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar link styling */
+nav ul li a {
+    color: #CCCCD6; /* Text color */
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s;
+    border-radius: 4px; /* Slight rounding for the links */
+}
+
+/* Active tab styling */
+nav ul li a.active {
+    background-color: #22252B; /* Color for the active tab */
+    font-weight: bold;
+}
+
+/* Hover effect for non-active tabs */
+nav ul li a:hover:not(.active) {
+    background-color: #4A4A7D; /* Slight hover color (optional, adjust as needed) */
+}
+
+/* Iframe styling */
+iframe {
+    width: 100%;
+    height: 94vh;
+    border: none;
+}
+
+/* Loading screen styling */
+#loading {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 1.2em;
+    color: #333;
+}
+
+#loading img {
+    width: 50px;
+    height: 50px;
+}

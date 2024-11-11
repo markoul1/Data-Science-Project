@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading icon and message -->
+    <div id="loading">
+        <img src="loading.gif" alt="Loading..."> <!-- Replace with your loading icon -->
+        <p>Fetching latest data...</p>
+    </div>
+
+    <!-- Horizontal Navbar -->
+    <nav>
+        <ul>
+            <li><a href="#"  onclick="loadContent('past/past.html', this)">Past</a></li>
+            <li><a href="#" class="active" onclick="loadContent('current/current.html', this)">Current</a></li>
+            <li><a href="#" onclick="loadContent('future/future.html', this)">Future</a></li>
+        </ul>
+    </nav>
+
+    <!-- Iframe to load the content -->
+    <iframe id="content-frame" src="current/current.html"></iframe>
+    
+    <script src="script.js"></script>
+</body>
+</html>

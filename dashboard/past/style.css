@@ -1,0 +1,157 @@
+/* Basic reset for margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+/* Main container with two columns: content and KPIs */
+.container {
+    display: grid;
+    grid-template-columns: 84% 15%; /* Content takes 84%, KPIs 15% */
+    height: 100vh; /* Full viewport height */
+    gap: 10px; /* Optional gap between columns */
+    overflow: hidden; /* Hide overflow to avoid scrollbar */
+}
+
+/* Content column, with three sections: pollutants, weather, traffic */
+.content {
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 33% 33% 33%;
+    gap: 10px;
+    padding: 10px;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.pollutants {
+    grid-row: 1;
+    grid-column: 1;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+#location-selector {
+    display: block;
+    width: 100%;
+    height: 30px; /* Set height for the select element */
+    margin-bottom: 5px; /* Space between selector and iframe */
+}
+
+/* KPIs styling */
+.kpis div:nth-child(-n+4) { /* First 4 elements */
+    height: 18.5%; /* Consistent height per KPI */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kpis div:nth-child(5) { /* 5th element */
+    height: 26%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.weather {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex !important;
+    flex-direction: column;
+    padding: 3px;
+    justify-content: space-between;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.traffic {
+    grid-row: 1 ;
+    grid-column: 3;
+    background-color: #ffe0e1;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+/* KPIs column */
+.kpis div {
+    display: flex !important;
+    flex-direction: column;
+    padding: 3px;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.kpis canvas {
+    width: 97%;
+}
+
+/* Traffic container */
+#traffic-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Hide any overflow */
+}
+
+#traffic-container > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Full height */
+}
+
+#location-selector {
+    height: 5%;
+    margin: 0;
+    display: block;
+    width: 100%;
+}
+
+#traffic-iframe {
+    flex-grow: 1;
+    border: none;
+    width: 100%;
+    height: 95%; /* Account for selector height */
+    overflow: hidden;
+}
+select {
+    background-color: #181B1F; /* Match select background to navbar */
+    color: #CCCCD6; /* Match select text color */
+    font-size: 1rem;
+    padding: 0.5rem 2rem 0.5rem 0.5rem; /* Adjust padding for the dropdown arrow */
+    border: none;
+    border-radius: 4px;
+    margin: 0.5rem;
+    outline: none;
+    width: auto;
+    appearance: none;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+select:focus {
+    background-color: #22252B; /* Darker shade on focus */
+    color: #CCCCD6; /* Keep text color consistent */
+}
+
+select option {
+    background-color: #181B1F; /* Match option background to select */
+    color: #CCCCD6; /* Match option text color */
+    padding: 0.5rem;
+}
+
+/* Custom arrow background */
+select {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 5,5 10,0" fill="%23CCCCD6"/></svg>'); /* Triangle color updated to text color */
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center; /* Position the arrow */
+    background-size: 10px; /* Adjust size of the arrow */
+}

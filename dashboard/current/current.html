@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Status</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Content Column -->
+        <div class="content">
+            <div class="pollutants">
+                    <canvas id="pollutants-plot" alt="Loading plot"></canvas>
+            </div>
+            <div class="weather">
+                <canvas id="wind-weather-plot" alt="Loading plot"></canvas>
+                <canvas id="precipitation-weather-plot" alt="Loading plot"></canvas>
+                <canvas id="temperature-weather-plot" alt="Loading plot"></canvas>
+            </div>
+            <div class="traffic" id="traffic-container">
+                <div>
+                    <select id="location-selector"></select>
+                    <iframe id="traffic-iframe" src="/current/trafficVisualizer.html" title="Traffic Visualizer"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs Column -->
+        <div class="kpis">
+            <div>
+                <canvas id="max25-plot" alt="Loading plot"></canvas>
+            </div>
+            <div>
+                <canvas id="max10-plot" alt="Loading plot"></canvas>
+            </div>
+            <div>
+                <canvas id="avg25-plot" alt="Loading plot"></canvas>
+            </div>
+            <div>
+                <canvas id="avg10-plot" alt="Loading plot"></canvas>
+            </div>
+            <div>
+                <canvas id="overall-plot" alt="Loading plot"></canvas>
+            </div>            
+        </div>
+    </div>
+    <script src="locationSelector.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="pollutantsCharts.js"></script>
+    <script src="weatherCharts.js"></script>
+    <script src="kpiCharts.js"></script>
+</body>
+</html>

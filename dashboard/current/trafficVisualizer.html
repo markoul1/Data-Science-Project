@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map with Traffic Data</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.vectorgrid/dist/Leaflet.VectorGrid.min.js"></script>
+    <style>
+        /* Ensure the map is displayed correctly */
+        html, body {
+            height: 100%; /* Ensure the body takes the full height */
+            margin: 0; /* Remove default margin */
+        }
+        #map {
+            height: 100vh;  /* Full height of the viewport */
+            width: 100%;    /* Full width */
+        }
+        .marker-label {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            font-size: 12px; /* Adjust font size here */
+            text-align: center; /* Center the text */
+        }
+        img.leaflet-marker-icon{
+            filter: grayscale(100%) brightness(50%) contrast(7) !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+    window.addEventListener('message', function(event) {
+        var data = event.data;
+        if (data.action === 'updateLocations') {
+            updateLabelPositions(data.locations);
+        } 
+    }, false);
+    // Initialize the map and set view to the given latitude and longitude with zoom level
+    var initialZoomLevel = 11;
+    var map = L.map('map').setView([45.442, 9.212], initialZoomLevel); // Centered on Milan
+    var zoom_level = initialZoomLevel; // Initialize zoom level variable
+
+    // Add OpenStreetMap base layer
+    var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    map.addLayer(osmLayer);
+
+    // HERE API Traffic Tile URL (using zoom, x, y placeholders)
+    var HERE_URL = "https://traffic.vector.hereapi.com/v2/traffictiles/flow/mc/{z}/{x}/{y}/omv?apikey=CrLz54wVwUOQ5gQjUFlnS_RT9Spo_DF1csKwahfGDfU";
+
+    // Add the traffic layer using Leaflet.VectorGrid.protobuf
+    var trafficLayer = L.vectorGrid.protobuf(HERE_URL, {
+        // Define styles for the traffic layer
+        vectorTileLayerStyles: {
+            // Use 'traffic_flow' as the layer name
+            traffic_flow: function(properties) {
+                // Log properties for debugging
+
+                // Calculate traffic volume
+                let volume = calculate_traffic_volume(properties.congestion, properties.speed, properties.road_kind_detail);
+
+                // Dynamic styling based on traffic volume
+                let color = 'gray'; // Default color
+                let weight = 2; // Default weight
+
+                // Using the traffic volume property to determine color
+                if (volume < 200) {
+                    color = 'green'; // Low volume
+                } else if (volume < 600) {
+                    color = 'yellow'; // Moderate volume
+                } else if (volume < 1000) {
+                    color = 'orange'; // High volume
+                } else {
+                    color = 'red'; // Very high volume
+                }
+
+                // Return the style for the traffic line
+                return {
+                    weight: weight,
+                    color: color,
+                    opacity: 1 // Ensure the line is visible
+                };
+            }
+        },
+        interactive: true // Enable interactivity
+    });
+
+    
+
+    // Arrays to keep track of markers and polylines
+    var labelMarkers = [];
+    var polylines = [];
+    var originalMarkers = []; // Array to hold original markers
+    
+    // Function to update label positions based on the current zoom level
+    function updateLabelPositions(locations) {
+        if(locations == undefined){
+            // Weather tags data
+            locations = [
+                {'location_coordinates': [45.478, 9.224], 'name': 'Lambrate', 'pm10': 17, 'pm25': 52, 'url': 'https://api.waqi.info/feed/A156526?token=4eeb9d60ca90b4e6e7877e45dd5eae80ba634bf1', 'tooltip_offset': [10, 10]}, 
+                {'location_coordinates': [45.462, 9.21], 'name': 'Corso 22 Marzo', 'pm10': 11, 'pm25': 41, 'url': 'https://api.waqi.info/feed/A97507?token=4eeb9d60ca90b4e6e7877e45dd5eae80ba634bf1', 'tooltip_offset': [3, 13]}, 
+                {'location_coordinates': [45.442, 9.212], 'name': 'Via Franco Albini', 'pm10': 23, 'pm25': 58, 'url': 'https://api.waqi.info/feed/A246697?token=4eeb9d60ca90b4e6e7877e45dd5eae80ba634bf1', 'tooltip_offset': [-3, 13]}, 
+                {'location_coordinates': [45.475697, 9.172453], 'name': 'Piazza Sempione', 'pm10': 28, 'pm25': 83, 'url': 'https://api.waqi.info/feed/A21373?token=4eeb9d60ca90b4e6e7877e45dd5eae80ba634bf1', 'tooltip_offset': [0, -9]}, 
+                {'location_coordinates': [45.486, 9.19], 'name': 'Oggiaro', 'pm10': 12, 'pm25': 36, 'url': 'https://api.waqi.info/feed/A66889?token=4eeb9d60ca90b4e6e7877e45dd5eae80ba634bf1', 'tooltip_offset': [8, -3]}, 
+                {'location_coordinates': [45.426, 9.206], 'name': 'Via Federico Chopin', 'pm10': 29, 'pm25': 79, 'url': 'https://api.waqi.info/feed/A74863?token=4eeb9d60ca90b4e6e7877e45dd5eae80ba634bf1', 'tooltip_offset': [-5, 0]} 
+            ];
+        }
+        console.log("updating")
+        // Clear previous markers and polylines
+        labelMarkers.forEach(marker => map.removeLayer(marker));
+        polylines.forEach(polyline => map.removeLayer(polyline));
+        originalMarkers.forEach(marker => map.removeLayer(marker)); // Clear original markers
+        labelMarkers = []; // Reset markers array
+        polylines = []; // Reset polylines array
+        originalMarkers = []; // Reset original markers array
+
+        locations.forEach(function(location) {
+            var coords = location.location_coordinates;
+
+            // Create original marker
+            var originalMarker = L.marker(coords).addTo(map).bindPopup(location.name);
+            originalMarker.on('click', function() {
+                const iframe = window.top.document.getElementById('content-frame');
+                const selectElement = iframe.contentWindow.document.getElementById('location-selector');
+
+                if (selectElement) {
+                    for (let i = 0; i < selectElement.options.length; i++) {
+                        if (selectElement.options[i].text === location.name) {
+                            selectElement.selectedIndex = i;
+                            selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+                            break; 
+                        }
+                    }
+            }});
+            originalMarkers.push(originalMarker); 
+            
+
+            // Calculate scale based on the current zoom level
+            var scale_offset = Math.pow(initialZoomLevel / zoom_level, 10); // Exponential scaling
+            var labelLat = coords[0] + (location.tooltip_offset[0] * 0.007 * scale_offset); // Convert offset to lat degrees
+            var labelLon = coords[1] + (location.tooltip_offset[1] * 0.007 * scale_offset); // Convert offset to lon degrees
+
+            // Create a custom HTML label for persistent display
+            var label = L.divIcon({
+                className: 'marker-label',
+                html: '<strong>' + location.name + '</strong><br>' +
+                    'PM10: ' + location.pm10 + ' µg/m³<br>' +
+                    'PM2.5: ' + location.pm25 + ' µg/m³<br>' +
+                    '<a href="' + location.url + '" target="_blank">More info</a>',
+                iconSize: [120, 70] // Adjust the size of the label
+            });
+
+            // Add the label marker
+            var labelMarker = L.marker([labelLat, labelLon], { icon: label }).addTo(map);
+            labelMarkers.push(labelMarker); // Store the label marker for future reference
+
+            // Draw a line from the original marker to the label
+            var polyline = L.polyline([[coords[0], coords[1]], [labelLat, labelLon]], {
+                color: 'white',  // Color of the line
+                weight: 5,      // Width of the line
+                opacity: 0.6    // Opacity of the line
+            }).addTo(map);
+            polylines.push(polyline); // Store the polyline for future reference
+
+            // Draw a line from the original marker to the label
+            var polyline = L.polyline([[coords[0], coords[1]], [labelLat, labelLon]], {
+                color: 'black',  // Color of the line
+                weight: 3,      // Width of the line
+                opacity: 0.6    // Opacity of the line
+            }).addTo(map);
+            polylines.push(polyline); // Store the polyline for future reference
+        });
+    }
+
+    // Add the markers and labels initially
+    updateLabelPositions();
+
+    // Update the zoom level variable and label positions on zoom change
+    map.on('zoomend', function() {
+        zoom_level = map.getZoom(); // Get the current zoom level
+        updateLabelPositions(); // Update the positions of labels
+    });
+
+    // Add the traffic layer
+    map.addLayer(trafficLayer);
+
+    // Function to calculate traffic volume based on the provided properties
+    function calculate_traffic_volume(congestion, average_speed, road_type) {
+        const road_capacity = {
+            'primary': 1600,
+            'secondary': 1200,
+            'tertiary': 800,
+            'residential': 400
+        };
+
+        // Get the capacity for the given road type
+        const Q = road_capacity[road_type] || 400; // Default to residential capacity if invalid
+
+        // Assume a free-flow speed (for example, 60 km/h)
+        const free_flow_speed = 60;  // km/h
+
+        // Calculate effective capacity
+        const effective_capacity = Q * (1 - congestion);
+
+        // Calculate traffic volume
+        const traffic_volume = effective_capacity * (average_speed / free_flow_speed);
+
+        return traffic_volume;
+    }
+</script>
+</body>
+</html>
