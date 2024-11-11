@@ -75,7 +75,7 @@ ruta_8 = './Pollutants csv/Sensor_Via_Frederico_Chopin_pm2.5.csv'
 data=fetch_historic_pollutants(ruta_1,ruta_2,station_ID_lamb)+fetch_historic_pollutants(ruta_3,ruta_4,station_ID_cors)
 data=data + fetch_historic_pollutants(ruta_5,ruta_6,station_ID_fran) + fetch_historic_pollutants(ruta_7,ruta_8,station_ID_fred)
 print(len(data))
-db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@agosplace.ddns.net:5432/datasciencesociety")
+db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@localhost:5432/datasciencesociety")
 inspector = inspect(db_conn)
 tables = inspector.get_table_names()
 metadata = MetaData()
