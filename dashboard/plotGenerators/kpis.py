@@ -86,7 +86,7 @@ def generate(DBdata):
 
 def getDataFromDB():
     # Connect to the database to download the table pollution_sensor_data and create a dataframe with it
-    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@agosplace.ddns.net:5432/datasciencesociety")
+    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@localhost:5432/datasciencesociety")
 
     # Set the parameters to evaluate the last 24 hours 
     start_date_timestamp = datetime.today() - timedelta(days=1)

@@ -22,52 +22,56 @@ def generate(DBdata):
     print(DBdata)
     # Generate data for each location
     for location in LOCATIONS:
-        # Example DataFrame for each location
-        data = {
-            'Hour': DBdata["hours"],
-            'PM25': DBdata[location]['PM25'],
-            'PM10': DBdata[location]['PM10'],
-        }
-        df = pd.DataFrame(data)
+        try:
+            # Example DataFrame for each location
+            data = {
+                'Hour': DBdata["hours"],
+                'PM25': DBdata[location]['PM25'],
+                'PM10': DBdata[location]['PM10'],
+            }
+            df = pd.DataFrame(data)
 
-        # Prepare JSON data for the current location
-        locations_data[location] = {
-            "title": f"Pollutant Levels Over Time For {location}",
-            "datasets": [
-                {
-                    "label": "PM 2.5",
-                    "data": df["PM25"].tolist(),
-                    "borderColor": "rgba(54, 162, 235, 1)",
-                    "fill": False,  # Use Python's False (will convert to false in JSON)
-                    "borderWidth": 1,
-                    "tension": 0
-                },
-                {
-                    "label": "PM 10",
-                    "data": df["PM10"].tolist(),
-                    "borderColor": "rgba(75, 192, 192, 1)",
-                    "fill": False,
-                    "borderWidth": 1,
-                    "tension": 0
-                }
-            ],
-            "scales": {
-                "x": {
-                    "title": {
-                        "display": True,  # Use Python's True (will convert to true in JSON)
-                        "text": "Hour of Day"
+            # Prepare JSON data for the current location
+            locations_data[location] = {
+                "title": f"Pollutant Levels Over Time For {location}",
+                "datasets": [
+                    {
+                        "label": "PM 2.5",
+                        "data": df["PM25"].tolist(),
+                        "borderColor": "rgba(54, 162, 235, 1)",
+                        "fill": False,  # Use Python's False (will convert to false in JSON)
+                        "borderWidth": 1,
+                        "tension": 0
+                    },
+                    {
+                        "label": "PM 10",
+                        "data": df["PM10"].tolist(),
+                        "borderColor": "rgba(75, 192, 192, 1)",
+                        "fill": False,
+                        "borderWidth": 1,
+                        "tension": 0
+                    }
+                ],
+                "scales": {
+                    "x": {
+                        "title": {
+                            "display": True,  # Use Python's True (will convert to true in JSON)
+                            "text": "Hour of Day"
+                        }
+                    },
+                    "y": {
+                        "beginAtZero": True,
+                        "title": {
+                            "display": True,
+                            "text": "Levels (µg/m³)"
+                        }
                     }
                 },
-                "y": {
-                    "beginAtZero": True,
-                    "title": {
-                        "display": True,
-                        "text": "Levels (µg/m³)"
-                    }
-                }
-            },
-            "hours": df["Hour"].tolist()
-        }
+                "hours": df["Hour"].tolist()
+            }
+        except Exception as e:
+            print("There was an error formatting the pollution data fro the plots ", e)
+
 
     # Prepare the final JSON structure
     json_data = {
@@ -85,7 +89,7 @@ def generate(DBdata):
 def getDataFromDB():
     data = {}
     # Connect to the database to download the table pollution_sensor_data and create a dataframe with it
-    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@agosplace.ddns.net:5432/datasciencesociety")
+    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@localhost:5432/datasciencesociety")
 
     # Set the parameters to evaluate the last 24 hours 
     start_date_timestamp = datetime.today() - timedelta(days=1)

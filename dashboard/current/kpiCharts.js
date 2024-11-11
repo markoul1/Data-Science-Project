@@ -101,4 +101,4 @@ createLinechart("max25-plot", "Maximum pollutant level 2.5 (µg/m³)");
 createLinechart("max10-plot", "Maximum pollutant level 10 (µg/m³)");
 createLinechart("avg25-plot", "Average of 2.5 (µg/m³)");
 createLinechart("avg10-plot", "Average of 10 (µg/m³)");
-createLinechart("overall-plot", "Overall quality index (aqi)");
+createLinechart("overall-plot", "Average quality index (aqi)");

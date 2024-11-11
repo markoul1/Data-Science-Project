@@ -25,6 +25,7 @@ RUN mkdir -p /usr/share/nginx/html
 COPY . /usr/share/nginx/html/
 COPY generatePlots.py /app/generatePlots.py
 COPY plotGenerators/. /app/plotGenerators
+COPY consolidationScripts/. /app/consolidationScripts
 COPY cronjob /etc/cron.d/cronjob
 COPY start.sh /usr/local/bin/start.sh
 COPY nginx.conf /etc/nginx/nginx.conf
