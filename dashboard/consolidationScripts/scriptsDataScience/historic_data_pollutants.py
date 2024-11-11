@@ -56,19 +56,19 @@ def fetch_historic_pollutants(routepm10,routepm25,station_ID):
   return data
 
 
-station_ID_lamb="156526"
+station_ID_lamb="Lambrate"
 ruta_1 = './Pollutants csv/Sensor Lamberte pm10.csv'
 ruta_2 = './Pollutants csv/Sensor Lamberte pm2.5.csv'
 
-station_ID_cors="97507"
+station_ID_cors="Corso 22 Marzo"
 ruta_3 = './Pollutants csv/Sensor_Corso_22_Marzo_pm10_new.csv'
 ruta_4 = './Pollutants csv/Sensor_Corso_22_Marzo_pm2.5_new.csv'
 
-station_ID_fran="246697"
+station_ID_fran="Via Franco Albini"
 ruta_5 = './Pollutants csv/Sensor_Via_Franco_pm10.csv'
 ruta_6 = './Pollutants csv/Sensor_Via_Franco_pm2.5.csv'
 
-station_ID_fred="74863"
+station_ID_fred="Via Federico Chopin"
 ruta_7 = './Pollutants csv/Sensor_Via_Frederico_Chopin_pm10.csv'
 ruta_8 = './Pollutants csv/Sensor_Via_Frederico_Chopin_pm2.5.csv'
 
