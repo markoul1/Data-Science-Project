@@ -18,7 +18,7 @@ async function fetchPollutantsData() {
 
 let pollutantsChart; // Declare the chart variable outside the function
 
-async function createPastPollutantsLinechart(chartId) {
+async function createFuturePollutantsLinechart(chartId) {
     selectedLocation = getSelectedlocation()
     const pollutantsJsonData = await fetchPollutantsData();
 
@@ -91,7 +91,7 @@ async function updatePollutantsChart(chartId) {
 
 // Function to handle location change
 async function changePollutantsLocation() {
-    await createPastPollutantsLinechart("pollutants-plot");
+    await createFuturePollutantsLinechart("pollutants-plot");
 }
 
 function getSelectedlocation(){

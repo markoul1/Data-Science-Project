@@ -98,7 +98,7 @@ def generate():
     json_string = json.dumps(json_data, indent=4)  # Convert Python dictionary to JSON string with indentation
 
     # Save JSON to a file
-    with open('/usr/share/nginx/html/plotData/current/pollutants/data.json', 'w') as json_file:
+    with open('/usr/share/nginx/html/plotData/future/pollutants/data.json', 'w') as json_file:
         json_file.write(json_string)  # Write the JSON string directly to the file
     print("Generated pollutants")
 
@@ -170,7 +170,7 @@ def dataframe_generates():
 def getDataFromDB():
     data = {}
     
-    db_conn  = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@agosplace.ddns.net:5432/datasciencesociety")
+    db_conn  = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@db:5432/datasciencesociety")
     inspector = inspect(db_conn)
     tables = inspector.get_table_names()
     metadata = MetaData()
@@ -189,8 +189,8 @@ def getDataFromDB():
             df = pd.read_sql(query, conn)
             df=df.drop(['year_week', 'year_week_station_ID'], axis=1)
             return df
-    except SQLAlchemyError as e:
-        logging.error(f"Data extraction failed: {e}")
+    except Exception as e:
+        print(f"Data extraction failed: {e}")
         return []
 
 def truncate_from_back(data):

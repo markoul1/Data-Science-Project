@@ -1,6 +1,6 @@
 async function fetchPollutantsData() {
     try {
-        const response = await fetch('/plotData/current/pollutants/data.json');
+        const response = await fetch('/plotData/future/pollutants/data.json');
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -27,6 +27,14 @@ async function createFuturePollutantsLinechart(chartId) {
     const locationData = pollutantsJsonData.locations[selectedLocation];
     const hoursArray = locationData.hours;
     const datasetsArray = locationData.datasets;
+    datasetsArray.forEach(dataset => {
+        dataset.segment = {
+            borderDash: (ctx) => {
+                // Check if the current segment starts within the last 5 data points
+                return ctx.p0DataIndex >= dataset.data.length - 5 ? [5, 6] : undefined;
+            }
+        };
+    });
     const scalesConfig = locationData.scales;
     const chartTitle = locationData.title;
     console.log("Title", chartTitle)
@@ -71,6 +79,7 @@ async function updatePollutantsChart(chartId) {
     if (!pollutantsJsonData || !pollutantsJsonData.locations[selectedLocation]) return;
 
     const locationData = pollutantsJsonData.locations[selectedLocation];
+    console.log(locationData.datasets)
     const hoursArray = locationData.hours;
     const pm25DataArray = locationData.datasets[0].data;
     const pm10DataArray = locationData.datasets[1].data;

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Status</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- Content Column -->
+    <div class="content">
+        <div class="pollutants">
+            <select id="location-selector"></select>
+            <canvas id="pollutants-plot" alt="Loading plot"></canvas>
+        </div>
+    </div>
+    <script src="locationSelector.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="weatherCharts.js"></script>
+    <script src="pollutantsCharts.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 @reboot python /app/generatePlots.py >> /var/log/script.log 2>&1
-*/1 * * * * python /app/generatePlots.py >> /var/log/script.log 2>&1
+0 * * * * python /app/generatePlots.py >> /var/log/script.log 2>&1
 
 1 * * * * python /app/consolidationScripts/traffic_volume_around_each_air_sensor.py >> /app/consolidationScripts/scriptsDataScience/traffic_volume_db_inser_insertion.log 2>&1
 5 * * * * python /app/consolidationScripts/scriptsDataScience/weather.py  >> /app/consolidationScripts/scriptsDataScience/weather_db_insertion.log 2>&1
