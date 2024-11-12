@@ -1,4 +1,4 @@
-async function fetchPastWeatherData() {
+async function fetchPollutantsData() {
     try {
         const response = await fetch('/plotData/current/pollutants/data.json');
 
@@ -18,9 +18,9 @@ async function fetchPastWeatherData() {
 
 let pollutantsChart; // Declare the chart variable outside the function
 
-async function createPastWeatherLinechart(chartId) {
+async function createPollutantsLinechart(chartId) {
     selectedLocation = getSelectedlocation()
-    const pollutantsJsonData = await fetchPastWeatherData();
+    const pollutantsJsonData = await fetchPollutantsData();
 
     if (!pollutantsJsonData || !pollutantsJsonData.locations[selectedLocation]) return;
 
@@ -67,7 +67,7 @@ async function updatePollutantsChart(chartId) {
     selectedLocation = getSelectedlocation()
     console.log("Updating pollutants chart for location:", selectedLocation);
 
-    const pollutantsJsonData = await fetchPastWeatherData();
+    const pollutantsJsonData = await fetchPollutantsData();
     if (!pollutantsJsonData || !pollutantsJsonData.locations[selectedLocation]) return;
 
     const locationData = pollutantsJsonData.locations[selectedLocation];
@@ -90,7 +90,7 @@ async function updatePollutantsChart(chartId) {
 
 // Function to handle location change
 async function changePollutantsLocation() {
-    await createPastWeatherLinechart("pollutants-plot");
+    await createPollutantsLinechart("pollutants-plot");
 }
 
 function getSelectedlocation(){

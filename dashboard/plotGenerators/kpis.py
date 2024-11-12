@@ -3,6 +3,7 @@ import json
 from sqlalchemy import create_engine, text, inspect, Table
 from datetime import datetime, timedelta
 import pytz
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 KPIS = [
         "Maximum pollutant level 2.5 (µg/m³)",
@@ -25,6 +26,10 @@ def generate():
             'value': DBdata[kpi],
             'threshold': 23
         }
+        
+        print(kpi)
+        print(len(data["Hour"]))
+        print(len(data["value"]))
         df = pd.DataFrame(data)
 
         # Prepare JSON data for the current location
@@ -84,6 +89,7 @@ def generate():
         json_file.write(json_string)  # Write the JSON string directly to the file
     print("Generated kpis")
 
+@retry(stop=stop_after_attempt(5), wait=wait_fixed(5))
 def getDataFromDB():
     # Connect to the database to download the table pollution_sensor_data and create a dataframe with it
     engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@db:5432/datasciencesociety")
@@ -126,15 +132,23 @@ def getDataFromDB():
     kpi_average_aqi_sorted = kpi_average_aqi.set_index('hour').reindex(ordered_hours) # Create a new table with the average score of the overall air quality for the last 24 hours in order
     kpi_max_p25_sorted = kpi_max_p25.set_index('hour')  # Create a new table with the max score of pm2.5 for the last 24 hours in order
     kpi_max_p10_sorted = kpi_max_p10.set_index('hour')   # Create a new table with the max score of pm10 for the last 24 hours in order
-
-    #Transform all the dataframes
+    
+    merged_df = pd.concat([
+        kpi_average_p25_sorted,
+        kpi_average_p10_sorted,
+        kpi_average_aqi_sorted,
+        kpi_max_p25_sorted,
+        kpi_max_p10_sorted
+    ], axis=1)
+    merged_df_cleaned = merged_df.dropna()
+    
     return {
-        KPIS[0]: kpi_max_p25_sorted.values.flatten().tolist(),
-        KPIS[1]: kpi_max_p10_sorted.values.flatten().tolist(),
-        KPIS[2]: kpi_average_p25_sorted.values.flatten().tolist(),
-        KPIS[3]: kpi_average_p10_sorted.values.flatten().tolist(),
-        KPIS[4]: kpi_average_aqi_sorted.values.flatten().tolist(),
-        "hours": ordered_hours
+        KPIS[0]: merged_df_cleaned.iloc[:,0].values.flatten().tolist(),
+        KPIS[1]: merged_df_cleaned.iloc[:,1].values.flatten().tolist(),
+        KPIS[2]: merged_df_cleaned.iloc[:,2].values.flatten().tolist(),
+        KPIS[3]: merged_df_cleaned.iloc[:,3].values.flatten().tolist(),
+        KPIS[4]: merged_df_cleaned.iloc[:,4].values.flatten().tolist(),
+        "hours": merged_df_cleaned.index.tolist()
 
     }
 

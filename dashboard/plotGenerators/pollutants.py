@@ -3,6 +3,7 @@ import json  # Import json to use for dumping the JSON correctly
 from sqlalchemy import create_engine, text, inspect, Table
 from datetime import datetime, timedelta
 import pytz
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 
 # Define locations
@@ -26,7 +27,7 @@ def generate():
         try:
             # Example DataFrame for each location
             data = {
-                'Hour': DBdata["hours"],
+                'Hour': DBdata[location]["hours"],
                 'PM25': DBdata[location]['PM25'],
                 'PM10': DBdata[location]['PM10'],
             }
@@ -87,6 +88,7 @@ def generate():
         json_file.write(json_string)  # Write the JSON string directly to the file
     print("Generated pollutants")
 
+@retry(stop=stop_after_attempt(5), wait=wait_fixed(5))
 def getDataFromDB():
     data = {}
     # Connect to the database to download the table pollution_sensor_data and create a dataframe with it
@@ -129,9 +131,9 @@ def getDataFromDB():
     data.update({
         LOCATIONS[0]: {
             "PM25": average_p25_sorted.values.flatten().tolist(),
-            "PM10": average_p10_sorted.values.flatten().tolist()
+            "PM10": average_p10_sorted.values.flatten().tolist(),
+            "hours": average_p10_sorted.index.tolist()
         },
-        "hours": ordered_hours
 
     })
 
@@ -160,7 +162,8 @@ def getDataFromDB():
         data.update({
             location: {
                 "PM25": hour_p25.values.flatten().tolist(),
-                "PM10": hour_p10.values.flatten().tolist()
+                "PM10": hour_p10.values.flatten().tolist(),
+                "hours": hour_p10.index.tolist()
             }
         })
     return data
