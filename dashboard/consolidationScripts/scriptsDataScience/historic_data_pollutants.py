@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine, text, inspect, Table, Column, Integer, String, MetaData, BIGINT, REAL, SMALLINT, DateTime,  insert
 import logging
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData, Table, delete
 
 def transform_jason(df_group,station_ID):
@@ -88,21 +89,26 @@ new_table = Table('pollutants_historics', metadata,
                   Column("station", String(255))
                   )
 metadata.create_all(db_conn)
+Session = sessionmaker(bind=db_conn)
+session = Session()
 
 
 try:
-  with db_conn.connect() as session:
+    # Delete existing entries with the same keys
+    delete_query = text('DELETE FROM pollutants_historics WHERE "year_week_station_ID" = :year_week_station_ID')
     for entry in data:
-      delete_query = text('DELETE FROM pollutants_historics WHERE "year_week_station_ID" = :year_week_station_ID')
-      session.execute(delete_query, {"year_week_station_ID": entry['year_week_station_ID']})
+        session.execute(delete_query, {"year_week_station_ID": entry['year_week_station_ID']})
+    
+    # Commit deletions
     session.commit()
 
-    for entry in data:
-      session.execute(new_table.insert(), data)
+    # Insert the new data
+    session.execute(new_table.insert(), data)
     session.commit()  # Commit the transaction
     logging.info("Insertion successful")
 
 except SQLAlchemyError as e:
-  logging.error(f"Insertion failed: {e}")
-
-
+    session.rollback()  # Rollback in case of error
+    logging.error(f"Insertion failed: {e}")
+finally:
+    session.close()
