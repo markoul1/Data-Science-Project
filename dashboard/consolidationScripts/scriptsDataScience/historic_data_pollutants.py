@@ -14,6 +14,7 @@ def transform_jason(df_group,station_ID):
             'pm10': round(row['pm10median'], 2),  
             'pm25': round(row['pm25median'], 2),  
             'week' : row['week_number'],
+            'year' : row['year'],
             'year_week': row['year_week'],
             'year_week_station_ID': row['year_week']+'_'+station_ID,
             'station': station_ID
@@ -80,14 +81,15 @@ data=fetch_historic_pollutants(ruta_1,ruta_2,station_ID_lamb)+fetch_historic_pol
 data=data + fetch_historic_pollutants(ruta_5,ruta_6,station_ID_fran) + fetch_historic_pollutants(ruta_7,ruta_8,station_ID_fred)
 
 
-db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@db:5432/datasciencesociety")
+db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@agosplace.ddns.net:5432/datasciencesociety")
 inspector = inspect(db_conn)
 tables = inspector.get_table_names()
 metadata = MetaData()
 new_table = Table('pollutants_historics', metadata,
                   Column('pm10', REAL),
                   Column('pm25', REAL),
-                  Column('week', String(255)),
+                  Column('week', Integer),
+                  Column('year', Integer),
                   Column('year_week', String(255)),
                   Column('year_week_station_ID', String(255), primary_key=True),
                   Column("station", String(255))
