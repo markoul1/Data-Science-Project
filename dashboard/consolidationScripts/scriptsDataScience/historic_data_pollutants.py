@@ -1,7 +1,9 @@
 import pandas as pd
+from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine, text, inspect, Table, Column, Integer, String, MetaData, BIGINT, REAL, SMALLINT, DateTime,  insert
 import logging
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, MetaData, Table, delete
 
 def transform_jason(df_group,station_ID):
@@ -74,8 +76,8 @@ ruta_8 = './Pollutants csv/Sensor_Via_Frederico_Chopin_pm2.5.csv'
 
 data=fetch_historic_pollutants(ruta_1,ruta_2,station_ID_lamb)+fetch_historic_pollutants(ruta_3,ruta_4,station_ID_cors)
 data=data + fetch_historic_pollutants(ruta_5,ruta_6,station_ID_fran) + fetch_historic_pollutants(ruta_7,ruta_8,station_ID_fred)
-print(len(data))
-db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@localhost:5432/datasciencesociety")
+
+db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@db:5432/datasciencesociety")
 inspector = inspect(db_conn)
 tables = inspector.get_table_names()
 metadata = MetaData()
@@ -87,18 +89,26 @@ new_table = Table('pollutants_historics', metadata,
                   Column("station", String(255))
                   )
 metadata.create_all(db_conn)
-
+Session = sessionmaker(bind=db_conn)
+session = Session()
 
 
 try:
-  with db_conn.connect() as conn:
-      delete_stmt = delete(new_table)
-      conn.execute(delete_stmt)
-      conn.commit()
-      conn.execute(new_table.insert(), data)
-      conn.commit()
-      logging.info(f"Insertion successful")
-except Exception as e:
-      logging.error(f"Insertion failed \n {e}")
+    # Delete existing entries with the same keys
+    delete_query = text('DELETE FROM pollutants_historics WHERE "year_week_station_ID" = :year_week_station_ID')
+    for entry in data:
+        session.execute(delete_query, {"year_week_station_ID": entry['year_week_station_ID']})
+    
+    # Commit deletions
+    session.commit()
 
+    # Insert the new data
+    session.execute(new_table.insert(), data)
+    session.commit()  # Commit the transaction
+    logging.info("Insertion successful")
 
+except SQLAlchemyError as e:
+    session.rollback()  # Rollback in case of error
+    logging.error(f"Insertion failed: {e}")
+finally:
+    session.close()
