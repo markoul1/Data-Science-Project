@@ -27,7 +27,6 @@ async function createPastPollutantsLinechart(chartId) {
     const locationData = pollutantsJsonData.locations[selectedLocation];
     const hoursArray = locationData.hours;
     const datasetsArray = locationData.datasets;
-    print()
     const scalesConfig = locationData.scales;
     const chartTitle = locationData.title;
     console.log("Title", chartTitle)
@@ -72,7 +71,7 @@ async function updatePollutantsChart(chartId) {
     if (!pollutantsJsonData || !pollutantsJsonData.locations[selectedLocation]) return;
 
     const locationData = pollutantsJsonData.locations[selectedLocation];
-    const hoursArray = locationData.datasets[2].data;
+    const hoursArray = locationData.hours;
     const pm25DataArray = locationData.datasets[0].data;
     const pm10DataArray = locationData.datasets[1].data;
     const chartTitle = locationData.title; // Get the title for the new location

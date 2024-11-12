@@ -71,7 +71,8 @@ async function updatePollutantsChart(chartId) {
     if (!pollutantsJsonData || !pollutantsJsonData.locations[selectedLocation]) return;
 
     const locationData = pollutantsJsonData.locations[selectedLocation];
-    const hoursArray = locationData.datasets[2].data;
+    console.log(locationData.datasets)
+    const hoursArray = locationData.hours;
     const pm25DataArray = locationData.datasets[0].data;
     const pm10DataArray = locationData.datasets[1].data;
     const chartTitle = locationData.title; // Get the title for the new location

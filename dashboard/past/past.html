@@ -7,25 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="container">
-        <!-- Content Column -->
-        <div class="content">
-            <div class="pollutants">
-                <canvas id="pollutants-plot" alt="Loading plot"></canvas>
-            </div>
-            <div class="weather">
-                <canvas id="wind-weather-plot" alt="Loading plot"></canvas>
-                <canvas id="precipitation-weather-plot" alt="Loading plot"></canvas>
-                <canvas id="temperature-weather-plot" alt="Loading plot"></canvas>
-            </div>
-            <div class="traffic" id="traffic-container">
-                <div>
-                    <select id="location-selector"></select>
-                    <h2>Traffic</h2>
-                    <p>Traffic information goes here.</p>
-                </div>
-            </div>
+    
+    <!-- Content Column -->
+    <div class="content">
+        <div class="pollutants">
+            <select id="location-selector"></select>
+            <canvas id="pollutants-plot" alt="Loading plot"></canvas>
+        </div>
+        <div class="weather">
+            <canvas id="wind-weather-plot" alt="Loading plot"></canvas>
+            <canvas id="precipitation-weather-plot" alt="Loading plot"></canvas>
+            <canvas id="temperature-weather-plot" alt="Loading plot"></canvas>
         </div>
     </div>
     <script src="locationSelector.js"></script>
