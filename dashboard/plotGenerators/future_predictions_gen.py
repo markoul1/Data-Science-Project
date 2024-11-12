@@ -193,5 +193,120 @@ def getDataFromDB():
         logging.error(f"Data extraction failed: {e}")
         return []
 
+def truncate_from_back(data):
+    for location, metrics in data.items():
+        # Find the minimum length among the lists for each location
+        min_length = min(len(metrics['pm25']), len(metrics['pm10']), len(metrics['week']))
+        
+        # Truncate each list from the back to match the minimum length
+        metrics['pm25'] = metrics['pm25'][-min_length:]
+        metrics['pm10'] = metrics['pm10'][-min_length:]
+        metrics['week'] = metrics['week'][-min_length:]
+
+    return data
+  
+def create_lagged_features(data, n_lags, forecast_horizon=1):
+    X, y = [], []
+    for i in range(n_lags, len(data) - forecast_horizon + 1):
+        X.append(data[i-n_lags:i])
+        y.append(data[i + forecast_horizon - 1])
+    return np.array(X), np.array(y)
+
+def create_lagged_features_nextpred(data, n_lags):
+    X = []
+    for i in range(n_lags, len(data) + 1):
+        X.append(data[i - n_lags:i])
+    return np.array(X)
+
+# Function to train and predict using a given forecast horizon and calculate metrics
+def train_and_predict_pm10(dataframe, forecast_horizon, error="mse"):
+    # Reshape and scale the entire pm10 data for training
+    pm10_data = dataframe['pm10'].values.reshape(-1, 1)
+    scaler = MinMaxScaler()
+    pm10_data_scaled = scaler.fit_transform(pm10_data)
+
+    # Create lagged features for training
+    X, y = create_lagged_features(pm10_data_scaled, n_lags, forecast_horizon)
+
+    # Reshape and scale only the last n_lags values for future prediction separately
+    data_for_lagging_next_pred = dataframe.tail(n_lags)['pm10'].values.reshape(-1, 1)
+    data_for_lagging_next_pred_scaled = scaler.transform(data_for_lagging_next_pred)
+    x_future_pred = create_lagged_features_nextpred(data_for_lagging_next_pred_scaled, n_lags)
+
+
+    # Split data into training and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, shuffle=False)
+
+    # Define and compile the LSTM model
+    model = Sequential()
+    model.add(LSTM(50, activation='relu', input_shape=(n_lags, 1)))
+    model.add(Dense(1))
+    model.compile(optimizer='adam', loss=error)
+
+    # Train the model
+    model.fit(X_train, y_train, epochs=43, verbose=0)
+
+    # Make predictions on test data
+    y_pred = model.predict(X_test)
+
+    # Make the next prediction using the reshaped and scaled future data
+    next_pred = model.predict(x_future_pred)
+
+    # Inverse scale predictions and actual values
+    y_pred_rescaled = scaler.inverse_transform(y_pred)
+    y_test_rescaled = scaler.inverse_transform(y_test)
+    next_pred_rescaled = scaler.inverse_transform(next_pred)
+
+    # Calculate metrics
+    mae = mean_absolute_error(y_test_rescaled, y_pred_rescaled)
+    rmse = mean_squared_error(y_test_rescaled, y_pred_rescaled, squared=False)
+    mape = mean_absolute_percentage_error(y_test_rescaled, y_pred_rescaled) * 100
+
+    return y_test_rescaled.flatten(), y_pred_rescaled.flatten(), mae, rmse, mape, next_pred_rescaled.flatten()
+
+
+def train_and_predict_pm25(dataframe, forecast_horizon, error="mse"):
+    # Reshape and scale the entire pm10 data for training
+    pm10_data = dataframe['pm25'].values.reshape(-1, 1)
+    scaler = MinMaxScaler()
+    pm10_data_scaled = scaler.fit_transform(pm10_data)
+
+    # Create lagged features for training
+    X, y = create_lagged_features(pm10_data_scaled, n_lags, forecast_horizon)
+
+    # Reshape and scale only the last n_lags values for future prediction separately
+    data_for_lagging_next_pred = dataframe.tail(n_lags)['pm25'].values.reshape(-1, 1)
+    data_for_lagging_next_pred_scaled = scaler.transform(data_for_lagging_next_pred)
+    x_future_pred = create_lagged_features_nextpred(data_for_lagging_next_pred_scaled, n_lags)
+
+    # Split data into training and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, shuffle=False)
+
+    # Define and compile the LSTM model
+    model = Sequential()
+    model.add(LSTM(50, activation='relu', input_shape=(n_lags, 1)))
+    model.add(Dense(1))
+    model.compile(optimizer='adam', loss=error)
+
+    # Train the model
+    model.fit(X_train, y_train, epochs=43, verbose=0)
+
+    # Make predictions on test data
+    y_pred = model.predict(X_test)
+
+    # Make the next prediction using the reshaped and scaled future data
+    next_pred = model.predict(x_future_pred)
+
+    # Inverse scale predictions and actual values
+    y_pred_rescaled = scaler.inverse_transform(y_pred)
+    y_test_rescaled = scaler.inverse_transform(y_test)
+    next_pred_rescaled = scaler.inverse_transform(next_pred)
+
+    # Calculate metrics
+    mae = mean_absolute_error(y_test_rescaled, y_pred_rescaled)
+    rmse = mean_squared_error(y_test_rescaled, y_pred_rescaled, squared=False)
+    mape = mean_absolute_percentage_error(y_test_rescaled, y_pred_rescaled) * 100
+
+    return y_test_rescaled.flatten(), y_pred_rescaled.flatten(), mae, rmse, mape, next_pred_rescaled.flatten()
 
 generate()
