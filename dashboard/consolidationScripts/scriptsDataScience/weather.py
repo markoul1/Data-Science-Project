@@ -53,7 +53,7 @@ timestamp= int(datetime.now(time_zone).timestamp())
 from sqlalchemy import create_engine, text, inspect, Table, Column, Integer, String, MetaData, BIGINT, REAL, SMALLINT, DateTime
 import pandas as pd
 
-db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@localhost:5432/datasciencesociety")
+db_conn = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@db:5432/datasciencesociety")
 inspector = inspect(db_conn)
 
 # Step 3: Get the names of all tables in the database

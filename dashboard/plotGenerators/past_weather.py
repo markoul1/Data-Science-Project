@@ -103,5 +103,3 @@ def generate():
     with open('/usr/share/nginx/html/plotData/past/weather/data.json', 'w') as json_file:
        json.dump(past_data, json_file, indent=4)
     print("Generated weekly weather data JSON")
-
-generate()

@@ -9,11 +9,11 @@ KPIS = [
         "Maximum pollutant level 10 (µg/m³)",
         "Average of 2.5 (µg/m³)",
         "Average of 10 (µg/m³)",
-        "Overall quality index (aqi)",
+        "Average quality index (aqi)",
     ]
 
-def generate(DBdata):
-
+def generate():
+    DBdata = getDataFromDB()
     # Create a dictionary to hold data for each kpi
     kpi_data = {}
 
@@ -86,7 +86,7 @@ def generate(DBdata):
 
 def getDataFromDB():
     # Connect to the database to download the table pollution_sensor_data and create a dataframe with it
-    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@localhost:5432/datasciencesociety")
+    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@db:5432/datasciencesociety")
 
     # Set the parameters to evaluate the last 24 hours 
     start_date_timestamp = datetime.today() - timedelta(days=1)
@@ -138,5 +138,4 @@ def getDataFromDB():
 
     }
 
-# Call the function to generate the JSON
-generate(getDataFromDB())
+

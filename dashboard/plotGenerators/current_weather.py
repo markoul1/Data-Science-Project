@@ -5,7 +5,8 @@ from sqlalchemy import create_engine, text, inspect, Table
 from datetime import datetime, timedelta
 import pytz
 
-def generate(DBdata):
+def generate():
+    DBdata = getDataFromDB()
     current_data = {
         "weather_metrics": {
             "title": "Current Weather Metrics in the last 24h",
@@ -69,7 +70,7 @@ def generate(DBdata):
 def getDataFromDB():
     data = {}
     # Connect to the database to download the table pollution_sensor_data and create a dataframe with it
-    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@localhost:5432/datasciencesociety")
+    engine = create_engine("postgresql://colab:z9CeH0zNAiM5IaVpfctf1r@db:5432/datasciencesociety")
 
     # Set the parameters to evaluate the last 24 hours 
     start_date_timestamp = datetime.today() - timedelta(days=1)
@@ -111,4 +112,3 @@ def getDataFromDB():
         "hours": ordered_hours
     }
     return data
-generate(getDataFromDB())

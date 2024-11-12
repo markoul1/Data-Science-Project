@@ -1,2 +1,9 @@
 @reboot python /app/generatePlots.py >> /var/log/script.log 2>&1
 */1 * * * * python /app/generatePlots.py >> /var/log/script.log 2>&1
+
+1 * * * * python /app/consolidationScripts/traffic_volume_around_each_air_sensor.py >> /app/consolidationScripts/scriptsDataScience/traffic_volume_db_inser_insertion.log 2>&1
+5 * * * * python /app/consolidationScripts/scriptsDataScience/weather.py  >> /app/consolidationScripts/scriptsDataScience/weather_db_insertion.log 2>&1
+10 * * * * python /app/consolidationScripts/scriptsDataScience/pollutantsapi.py  >> /app/consolidationScripts/scriptsDataScience/pollutantsapi_db_insertion.log 2>&1
+
+#db dump backup
+30 2 * * * pg_dump -U colab -F p -b -v -f /var/lib/postgresql/data/dump_file.sql datasciencesociety

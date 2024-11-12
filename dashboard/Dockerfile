@@ -15,6 +15,8 @@ RUN apk add --no-cache cmake make gcc g++ libffi-dev ninja
 # Install base dependencies for pandas, numpy, seaborn, matplotlib
 RUN apk add --no-cache libpng-dev freetype-dev openblas-dev
 
+RUN apk add --no-cache dcron
+
 # Install necessary Python packages
 RUN pip install --no-cache-dir requests
 
