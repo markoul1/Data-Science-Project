@@ -110,13 +110,14 @@ def dataframe_generates():
     "Corso 22 Marzo",
     "Via Franco Albini",
     "Via Federico Chopin"]
+
   data = {}
 
   df=getDataFromDB()
 
   for location in LOCATIONS:
     if location == "All sensors":
-        filtered_df = df 
+        filtered_df = df
         grouped_df = filtered_df.groupby(['week','year']).agg({
     'pm10': 'mean',
     'pm25': 'mean',
@@ -162,7 +163,7 @@ def dataframe_generates():
                     "week":list(range(1, max(filtered_df[ (filtered_df['year'] == 2024)]["week"].values.tolist())+6))
 
                     }
-  return data
+  return truncate_from_back(data)
 
 
 
