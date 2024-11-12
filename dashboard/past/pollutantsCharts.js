@@ -1,6 +1,6 @@
 async function fetchPollutantsData() {
     try {
-        const response = await fetch('/plotData/current/pollutants/data.json');
+        const response = await fetch('/plotData/past/pollutants/data.json');
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -27,7 +27,6 @@ async function createPastPollutantsLinechart(chartId) {
     const locationData = pollutantsJsonData.locations[selectedLocation];
     const hoursArray = locationData.hours;
     const datasetsArray = locationData.datasets;
-    print()
     const scalesConfig = locationData.scales;
     const chartTitle = locationData.title;
     console.log("Title", chartTitle)

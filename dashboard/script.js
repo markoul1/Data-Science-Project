@@ -10,3 +10,10 @@ function loadContent(page, element) {
 }
 
 
+(function() {
+  const originalPrint = window.print;
+  window.print = function() {
+      console.log('Print dialog blocked');
+      // Do nothing to prevent the print dialog from appearing
+  };
+})();

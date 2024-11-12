@@ -33,6 +33,7 @@ COPY start.sh /usr/local/bin/start.sh
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY requirements.txt .
 
+
 RUN pip install --upgrade pip setuptools wheel
 
 # Install other necessary Python packages

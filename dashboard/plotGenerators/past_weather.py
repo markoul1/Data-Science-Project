@@ -1,6 +1,7 @@
 import requests as rq
 import pandas as pd
 import json
+from datetime import datetime
 
 def generate():
     """
@@ -37,6 +38,8 @@ def generate():
     daily_average_weather['day'] = pd.to_datetime(daily_average_weather['day'])
     daily_average_weather['week_of_year'] = daily_average_weather['day'].dt.isocalendar().week
 
+    curent_week = datetime.now().isocalendar().week
+    daily_average_weather = daily_average_weather[daily_average_weather['week_of_year'] <= curent_week]
     weekly_averages = daily_average_weather.groupby('week_of_year').agg({
         'wind_speed_10m': 'mean',
         'temperature_2m': 'mean',

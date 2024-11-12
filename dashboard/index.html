@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style type="text/css" media="print">
+        body {visibility: hidden; display: none;}
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
@@ -16,9 +19,9 @@
     <!-- Horizontal Navbar -->
     <nav>
         <ul>
-            <li><a href="#"  onclick="loadContent('past/past.html', this)">Past</a></li>
-            <li><a href="#" class="active" onclick="loadContent('current/current.html', this)">Current</a></li>
-            <li><a href="#" onclick="loadContent('future/future.html', this)">Future</a></li>
+            <li><a href="#"  onclick="loadContent('past/past.html', this); event.preventDefault();">Past</a></li>
+            <li><a href="#" class="active" onclick="loadContent('current/current.html', this); event.preventDefault();">Current</a></li>
+            <li><a href="#" onclick="loadContent('future/future.html', this); event.preventDefault();">Future</a></li>
         </ul>
     </nav>
 
