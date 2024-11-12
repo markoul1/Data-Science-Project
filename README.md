@@ -13,7 +13,7 @@
 
 
 ## How to Run the Project
-To run the realtime dashboard pleas enter  into the  doashboard folder and procede to write the following command into your terminal docker-compose up
+To run the realtime dashboard pleas enter  into the  doashboard folder and procede to write the following command into your terminal docker-compose up.
 
 All the data analysis was performed using jupyter notebooks. These are self-contained and do not need any particular setup to be executed.
 Some scripts are currently deployed and scheduled to run every hour on a raspberry pi to perform extraction, some manipulation, and insertion in the PostgreSQL.
